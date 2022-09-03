@@ -1,0 +1,32 @@
+[tables.dummy_data.username]
+type = "fullname"
+action = "update"
+
+[tables.dummy_data.first_name]
+type = "firstname"
+action = "update"
+
+[tables.dummy_data.last_name]
+type = "lastname"
+action = "update"
+
+[tables.dummy_data.street]
+type = "street"
+action = "update"
+
+[tables.dummy_data.city]
+type = "city"
+action = "update"
+
+[tables.dummy_data.email]
+type = "email"
+action = "update"
+
+[tables.dummy_data.telephone]
+type = "telephone"
+action = "update"
+
+[custom_queries]
+after = [
+    "UPDATE dummy_data SET custom = CONCAT(id, '@anonymizer.nl') WHERE custom NOT LIKE '%@eleven.nl';"
+]

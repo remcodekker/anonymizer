@@ -14,18 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {config} from './database/config.ts';
 import {client} from './database/connection.ts';
-import {executeCustomQueries, runQueriesFromConfig} from './database/transactions.ts';
+import {executeCustomBeforeQueries, executeCustomAfterQueries, runQueriesFromConfig} from './database/transactions.ts';
 
 // Do the first custom queries
-await executeCustomQueries(config.custom_queries.before);
+await executeCustomBeforeQueries();
 
 // Do the other queries specified in the config
 await runQueriesFromConfig();
 
 // Do the final custom queries
-await executeCustomQueries(config.custom_queries.after);
+await executeCustomAfterQueries();
 
 // Done! Close the connection.
 await client.close();

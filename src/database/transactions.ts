@@ -16,9 +16,9 @@
  */
 import {getFakeData} from '../faker/faker.ts';
 import {FakerType} from '../faker/faker.type.enum.ts';
-import {Column, Table} from '../interfaces/anonymizer.rules.ts';
+import {AnonymizerRules, Column, Table} from '../interfaces/anonymizer.rules.ts';
 import {ActionType} from './action.type.enum.ts';
-import {config} from './config.ts';
+import {loadConfig} from './load.config.ts';
 import {client} from './connection.ts';
 
 /**
@@ -35,6 +35,16 @@ const executeCustomQueries = async (queries: string[]): Promise<void> => {
 		await executeCustomQuery(query);
 	}
 };
+
+const executeCustomBeforeQueries = async (): Promise<void> => {
+	const configData = await loadConfig as AnonymizerRules;
+	await executeCustomQueries(configData.custom_queries.before);
+}
+
+const executeCustomAfterQueries = async (): Promise<void> => {
+	const configData = await loadConfig as AnonymizerRules;
+	await executeCustomQueries(configData.custom_queries.after);
+}
 
 /**
  * Execute a query in a transaction.
@@ -120,7 +130,8 @@ const getPrimaryColumnForTable = async (table: string): Promise<string> => {
  * Run the queries specified in the JSON config file.
  */
 const runQueriesFromConfig = async () => {
-	const tables: Record<string, Table> = config.tables;
+	const configData = await loadConfig as AnonymizerRules;
+	const tables: Record<string, Table> = configData.tables;
 	const tableNames: string[] = Object.keys(tables);
 
 	for (const table of tableNames) {
@@ -137,4 +148,4 @@ const runQueriesFromConfig = async () => {
 	}
 };
 
-export {executeCustomQueries, executeQuery, runQueriesFromConfig};
+export {executeCustomBeforeQueries, executeCustomAfterQueries, executeQuery, runQueriesFromConfig};

@@ -14,36 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Rhum} from '../deps.ts';
+import {assertExists} from 'https://deno.land/std@0.153.0/testing/asserts.ts';
+import * as mod from 'https://deno.land/std@0.153.0/testing/bdd.ts';
+
 import {getConfigEnvironmentVariable, getDatabaseEnvironmentVariables} from './helper.ts';
 
-Rhum.testPlan('Test helper.ts methods', () => {
-	Rhum.beforeAll(() => {
-		Deno.env.delete('ANONYMIZER_LOCAL_DATABASE');
-		Deno.env.delete('ANONYMIZER_LOCAL_USERNAME');
-		Deno.env.delete('ANONYMIZER_LOCAL_PASSWORD');
-		Deno.env.delete('ANONYMIZER_CONFIG');
-	});
-
-	Rhum.testSuite('Test getDatabaseEnvironmentVariables()', () => {
-		Rhum.testCase('to check if all Database environment variables exist', () => {
-			Deno.env.set('ANONYMIZER_LOCAL_DATABASE', 'example');
-			Deno.env.set('ANONYMIZER_LOCAL_USERNAME', 'example');
-			Deno.env.set('ANONYMIZER_LOCAL_PASSWORD', 'example');
-
-			const variables = getDatabaseEnvironmentVariables();
-			Rhum.asserts.assertExists(variables);
-		});
-
-		Rhum.testCase('to check if all Database environment variables exist', () => {
-			Deno.env.set('ANONYMIZER_CONFIG', '/Users/test/location/config.json');
-
-			const variables = getConfigEnvironmentVariable();
-			Rhum.asserts.assertExists(variables);
-		});
-	});
+mod.beforeAll(() => {
+	Deno.env.delete('ANONYMIZER_LOCAL_DATABASE');
+	Deno.env.delete('ANONYMIZER_LOCAL_USERNAME');
+	Deno.env.delete('ANONYMIZER_LOCAL_PASSWORD');
+	Deno.env.delete('ANONYMIZER_CONFIG');
 });
 
-Rhum.run();
+Deno.test("Test getDatabaseEnvironmentVariables()", () => {
+	Deno.env.set('ANONYMIZER_LOCAL_DATABASE', 'example');
+	Deno.env.set('ANONYMIZER_LOCAL_USERNAME', 'example');
+	Deno.env.set('ANONYMIZER_LOCAL_PASSWORD', 'example');
 
+	const variables = getDatabaseEnvironmentVariables();
+	assertExists(variables);
+});
 
+Deno.test("to check if all Database environment variables exist", () => {
+	Deno.env.set('ANONYMIZER_CONFIG', '/Users/test/location/config.json');
+
+	const variables = getConfigEnvironmentVariable();
+	assertExists(variables);
+});

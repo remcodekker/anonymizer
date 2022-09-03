@@ -14,21 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import {Config} from '../config/config.ts';
 import {AnonymizerRules} from '../interfaces/anonymizer.rules.ts';
 import {getConfigEnvironmentVariable} from '../utils/helper.ts';
 
-/**
- * Get the Anonymizer config file given as a json file
- *
- * @see example/example.json
- */
-const getConfig = async (): Promise<AnonymizerRules> => {
-	const config = getConfigEnvironmentVariable();
-	const decoder = new TextDecoder('utf-8');
-	const data = await Deno.readFile(config);
-	return JSON.parse(decoder.decode(data));
-};
+const loadConfig: Promise<Record<string, unknown> | undefined | AnonymizerRules> = Config.load(getConfigEnvironmentVariable()) as Promise<Record<string, unknown> | undefined | AnonymizerRules>;
 
-const config: AnonymizerRules = await getConfig();
-
-export {getConfig, config};
+export {loadConfig};
